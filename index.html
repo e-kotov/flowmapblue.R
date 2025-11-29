@@ -8,12 +8,12 @@
 <title>Flow Map Rendering • flowmapblue</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Flow Map Rendering">
-<meta name="description" content="Rendering interactive flow maps to visualize numbers of movements between locations (origin-destination data).">
-<meta property="og:description" content="Rendering interactive flow maps to visualize numbers of movements between locations (origin-destination data).">
-<meta property="og:image" content="https://flowmapblue.github.io/flowmapblue.R/reference/figures/opengraph-card.png">
+<meta name="description" content="Create interactive flow maps using FlowmapBlue TypeScript library &lt;https://github.com/FlowmapBlue/FlowmapBlue&gt;, which is a free tool for representing aggregated numbers of movements between geographic locations as flow maps. It is used to visualize urban mobility, commuting behavior, bus, subway and air travels, bicycle sharing, human and bird migration, refugee flows, freight transportation, trade, supply chains, scientific collaboration, epidemiological and historical data and many other topics. The package allows to either create standalone flow maps in form of htmlwidgets and save them in HTML files, or integrate flow maps into Shiny applications.">
+<meta property="og:description" content="Create interactive flow maps using FlowmapBlue TypeScript library &lt;https://github.com/FlowmapBlue/FlowmapBlue&gt;, which is a free tool for representing aggregated numbers of movements between geographic locations as flow maps. It is used to visualize urban mobility, commuting behavior, bus, subway and air travels, bicycle sharing, human and bird migration, refugee flows, freight transportation, trade, supply chains, scientific collaboration, epidemiological and historical data and many other topics. The package allows to either create standalone flow maps in form of htmlwidgets and save them in HTML files, or integrate flow maps into Shiny applications.">
+<meta property="og:image" content="https://flowmapblue.github.io/flowmapblue.R/card.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">flowmapblue</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,22 +49,27 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="flowmapblue-r-widget">Flowmap.blue R widget<a class="anchor" aria-label="anchor" href="#flowmapblue-r-widget"></a>
-</h1></div>
+<div class="page-header">
+<img src="logo.svg" class="logo" alt=""><h1 id="flowmapblue-r-widget-">Flowmap.blue R widget 
+<a class="anchor" aria-label="anchor" href="#flowmapblue-r-widget-"></a>
+</h1>
+</div>
 <!-- badges: start -->
 
+
+<!-- badges: end -->
 <p>WORK IN PROGRESS</p>
-<p>This is a <a href="https://www.flowmap.blue/" class="external-link">Flowmap.blue</a> widget for R. It produces an interactive flow map representing numbers of movements between locations (origin-destination data).</p>
-<p>You might also consider using this pure R flowmapping library: <a href="https://github.com/JohMast/flowmapper" class="external-link uri">https://github.com/JohMast/flowmapper</a></p>
+<p>This is a <a href="https://www.flowmap.blue/" class="external-link">Flowmap.blue</a> widget for R. Create interactive flow maps using <a href="https://github.com/FlowmapBlue/FlowmapBlue" class="external-link"><code>FlowmapBlue</code></a> TypeScript library, which is a free tool for representing aggregated numbers of movements between geographic locations as flow maps. It is used to visualize urban mobility, commuting behavior, bus, subway and air travels, bicycle sharing, human and bird migration, refugee flows, freight transportation, trade, supply chains, scientific collaboration, epidemiological and historical data and many other topics. The package allows to either create standalone flow maps in form of ‘htmlwidgets’ and save them in ‘HTML’ files, or integrate flow maps into ‘Shiny’ applications.</p>
+<p>You might also consider using this pure R flowmapping library based on <code>ggplot2</code>: <a href="https://github.com/JohMast/flowmapper" class="external-link uri">https://github.com/JohMast/flowmapper</a></p>
 <p><img src="reference/figures/demo.png"></p>
 <p>As an alternative, you may also consider using R to populate a spreadsheet for publishing on <a href="https://www.flowmap.blue/" class="external-link">Flowmap.blue</a> as described in this <a href="https://doodles.mountainmath.ca/blog/2020/01/06/flow-maps/" class="external-link">excellent blog post</a>.</p>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>From CRAN (when available):</p>
+<p>Install from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("flowmapblue")</span></span></code></pre></div>
-<p>To install from GitHub you will need to install <code>remotes</code> if you don’t have it yet:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"flowmapblue"</span><span class="op">)</span></span></code></pre></div>
+<p>To install the development version from GitHub you will need to install <code>remotes</code> if you don’t have it yet:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org" class="external-link">"remotes"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span></span>
@@ -78,7 +83,9 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MAPBOX_API_TOKEN <span class="op">=</span> <span class="st">"YOUR_MAPBOX_ACCESS_TOKEN"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># load locations and flows for Switzerland</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/FlowmapBlue/flowmapblue.R" class="external-link">flowmapblue</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># load locations and flows for Switzerland</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ch_locations</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ch_flows</span><span class="op">)</span></span>
 <span></span>
@@ -100,6 +107,7 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=flowmapblue" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/FlowmapBlue/flowmapblue.R/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/FlowmapBlue/flowmapblue.R/issues" class="external-link">Report a bug</a></li>
 </ul>
@@ -124,15 +132,20 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Ilya Boyandin <br><small class="roles"> Author, copyright holder </small> <a href="https://orcid.org/0000-0001-5585-7587" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Egor Kotov <br><small class="roles"> Maintainer </small> <a href="https://orcid.org/0000-0001-6690-5345" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Ilya Boyandin <br><small class="roles"> Author, copyright holder </small> <a href="https://orcid.org/0000-0001-5585-7587" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Egor Kotov <br><small class="roles"> Maintainer </small> <a href="https://orcid.org/0000-0001-6690-5345" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://CRAN.R-project.org/package=flowmapblue" target="_blank" class="external-link"><img src="https://www.r-pkg.org/badges/version/flowmapblue" alt="CRAN status"></a></li>
+<li><a href="https://CRAN.R-project.org/package=flowmapblue" target="_blank" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/flowmapblue?color=blue" alt="CRAN/METACRAN Total downloads"></a></li>
+<li><a href="https://CRAN.R-project.org/package=flowmapblue" target="_blank" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/flowmapblue?color=blue" alt="CRAN/METACRAN Downloads per month"></a></li>
 <li><a href="https://github.com/FlowmapBlue/flowmapblue.R/actions/workflows/R-CMD-check.yaml" target="_blank" class="external-link"><img src="https://github.com/FlowmapBlue/flowmapblue.R/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" target="_blank" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: stable"></a></li>
+<li><a href="https://doi.org/10.32614/CRAN.package.flowmapblue" class="external-link"><img src="https://zenodo.org/badge/DOI/10.32614/CRAN.package.flowmapblue.svg" alt="DOI"></a></li>
 </ul>
 </div>
 
@@ -145,7 +158,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
