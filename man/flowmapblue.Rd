@@ -10,7 +10,13 @@ flowmapblue(
   mapboxAccessToken = NULL,
   clustering = TRUE,
   animation = FALSE,
-  darkMode = FALSE
+  darkMode = FALSE,
+  palette = NULL,
+  reverse_palette = FALSE,
+  style = "quantile",
+  n = 5,
+  breaks = NULL,
+  location_color = NULL
 )
 }
 \arguments{
@@ -38,6 +44,18 @@ flowmapblue(
 \item{animation}{A \code{logical} value indicating whether to enable animation of flows on the map. Defaults to \code{FALSE}.}
 
 \item{darkMode}{A \code{logical} value indicating whether to enable dark mode for the map. Defaults to \code{FALSE}.}
+
+\item{palette}{A \code{character} string specifying the color palette to use for automatic color scaling based on flow magnitude. Can be a palette name from \code{grDevices::hcl.pals()} (e.g., "Viridis", "Plasma", "Blues") or a vector of hex color codes. If provided, the \code{color} column in \code{flows} will be overwritten.}
+
+\item{reverse_palette}{A \code{logical} value indicating whether to reverse the color palette. Defaults to \code{FALSE}.}
+
+\item{style}{A \code{character} string specifying the method to calculate breaks for the color scale. Supported methods are "fixed", "sd", "equal", "pretty", "quantile", "kmeans", "hclust", "bclust", "fisher", "jenks". Defaults to "quantile". See \code{\link[classInt:classIntervals]{classInt::classIntervals()}} for details.}
+
+\item{n}{An \code{integer} specifying the number of color intervals. Defaults to 5.}
+
+\item{breaks}{A numeric vector of break points for the color scale when \code{style = "fixed"}.}
+
+\item{location_color}{A \code{character} string specifying the color of the location circles. Can be a color name (e.g., "red", "blue") or a hex code (e.g., "#FF0000"). If \code{NULL} and \code{palette} is specified, defaults to the highest value of the flow palette. If \code{NULL} and \code{palette} is not specified, the color is determined by the \code{darkMode} setting (white for light mode, black for dark mode).}
 }
 \value{
 An HTML widget of class \code{flowmapblue} and \code{htmlwidget} that can be rendered in R Markdown, Shiny, or viewed in a browser. It can also be saved to \code{html} file with \code{\link[htmlwidgets:saveWidget]{htmlwidgets:saveWidget()}}. See examples for more details.
@@ -115,6 +133,20 @@ flowmap <- flowmapblue(
 )
 
 # view the map
+flowmap
+
+# example 4, automatic color scaling
+flowmap <- flowmapblue(
+ ch_locations,
+ ch_flows,
+ mapboxAccessToken = Sys.getenv('MAPBOX_API_TOKEN'),
+ clustering = FALSE,
+ darkMode = TRUE,
+ palette = "Plasma",
+ reverse_palette = TRUE,
+ style = "jenks",
+ n = 5
+)
 flowmap
 }
 

@@ -62,25 +62,70 @@ echo "Copying lib-entry.tsx..."
 cp "$ENTRY_POINT" lib-entry.tsx
 
 # 3. Patch dependencies and files
-# We use --legacy-peer-deps because of the react version conflicts we resolved
-if [ ! -d "node_modules" ]; then
-    echo "Checking for dependency conflicts..."
+echo "Applying patches..."
+
+# Patch package.json: Downgrade react-map-gl from 7.0.23 to 6.1.19
+if grep -q '"react-map-gl": "7.0.23"' package.json; then
+    echo "Downgrading react-map-gl to v6 for compatibility..."
+    sed -i '' 's/"react-map-gl": "7.0.23"/"react-map-gl": "6.1.19"/' package.json
+fi
+
+# Patch FlowMap.tsx: Use StaticMap instead of Map
+FLOWMAP_TSX="core/FlowMap.tsx"
+if grep -q 'import {Map as ReactMapGl} from' "$FLOWMAP_TSX"; then
+    echo "Patching FlowMap.tsx to use StaticMap..."
+    sed -i '' 's/import {Map as ReactMapGl} from/import {StaticMap as ReactMapGl} from/' "$FLOWMAP_TSX"
+    # Also fix the prop name change from v7 to v6
+    sed -i '' 's/mapboxAccessToken={mapboxAccessToken}/mapboxApiAccessToken={mapboxAccessToken}/' "$FLOWMAP_TSX"
+fi
+
+# Patch core/colors.ts: Support custom location color
+COLORS_TS="core/colors.ts"
+# We need to match the IIFE version that was previously applied
+if grep -q "outgoing: (function()" "$COLORS_TS"; then
+    echo "Removing old patch and re-applying..."
+    git checkout "$COLORS_TS"
+fi
+
+if grep -q "locationCircles: {" "$COLORS_TS"; then
+    echo "Patching colors.ts to support custom location color..."
+    # Replace the entire locationCircles block
+    # When location_color is provided, set all properties to that color
+    # When not provided, only set outgoing (let SDK use defaults for others)
     
-    # Patch package.json: Downgrade react-map-gl from 7.0.23 to 6.1.19
-    if grep -q '"react-map-gl": "7.0.23"' package.json; then
-        echo "Downgrading react-map-gl to v6 for compatibility..."
-        sed -i '' 's/"react-map-gl": "7.0.23"/"react-map-gl": "6.1.19"/' package.json
-    fi
+    perl -i -pe '
+      BEGIN { $in_location_circles = 0; }
+      if (/locationCircles: \{/) {
+        $in_location_circles = 1;
+        $_ = "    locationCircles: config[\"colors.location\"] ? {\n" .
+             "      outgoing: config[\"colors.location\"],\n" .
+             "      incoming: config[\"colors.location\"],\n" .
+             "      inner: config[\"colors.location\"],\n" .
+             "      highlighted: config[\"colors.location\"],\n" .
+             "    } : {\n" .
+             "      outgoing: darkMode ? \"#000\" : \"#fff\",\n";
+        next;
+      }
+      if ($in_location_circles && /^\s*\},\s*$/) {
+        $in_location_circles = 0;
+        $_ = "    },\n";
+      }
+      if ($in_location_circles) {
+        $_ = "";
+      }
+    ' "$COLORS_TS"
+fi
 
-    # Patch FlowMap.tsx: Use StaticMap instead of Map
-    FLOWMAP_TSX="core/FlowMap.tsx"
-    if grep -q 'import {Map as ReactMapGl} from' "$FLOWMAP_TSX"; then
-        echo "Patching FlowMap.tsx to use StaticMap..."
-        sed -i '' 's/import {Map as ReactMapGl} from/import {StaticMap as ReactMapGl} from/' "$FLOWMAP_TSX"
-        # Also fix the prop name change from v7 to v6
-        sed -i '' 's/mapboxAccessToken={mapboxAccessToken}/mapboxApiAccessToken={mapboxAccessToken}/' "$FLOWMAP_TSX"
-    fi
+# TODO: Patch core/FlowMap.selectors.ts to preserve colors during clustering
+# This is currently causing issues and needs more investigation
+# SELECTORS_TS="core/FlowMap.selectors.ts"
+# if grep -q "export const getSortedAggregatedFilteredFlows" "$SELECTORS_TS"; then
+#     echo "Patching FlowMap.selectors.ts to preserve colors during clustering..."
+#     ...
+# fi
 
+# Install dependencies if needed
+if [ ! -d "node_modules" ]; then
     echo "Installing dependencies..."
     npm install --legacy-peer-deps
 fi

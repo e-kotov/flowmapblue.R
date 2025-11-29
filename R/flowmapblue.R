@@ -25,6 +25,13 @@
 #' @param animation A `logical` value indicating whether to enable animation of flows on the map. Defaults to `FALSE`.
 #' @param darkMode A `logical` value indicating whether to enable dark mode for the map. Defaults to `FALSE`.
 #'
+#' @param palette A `character` string specifying the color palette to use for automatic color scaling based on flow magnitude. Can be a palette name from `grDevices::hcl.pals()` (e.g., "Viridis", "Plasma", "Blues") or a vector of hex color codes. If provided, the `color` column in `flows` will be overwritten.
+#' @param reverse_palette A `logical` value indicating whether to reverse the color palette. Defaults to `FALSE`.
+#' @param style A `character` string specifying the method to calculate breaks for the color scale. Supported methods are "fixed", "sd", "equal", "pretty", "quantile", "kmeans", "hclust", "bclust", "fisher", "jenks". Defaults to "quantile". See \code{\link[classInt:classIntervals]{classInt::classIntervals()}} for details.
+#' @param n An `integer` specifying the number of color intervals. Defaults to 5.
+#' @param breaks A numeric vector of break points for the color scale when `style = "fixed"`.
+#' @param location_color A `character` string specifying the color of the location circles. Can be a color name (e.g., "red", "blue") or a hex code (e.g., "#FF0000"). If `NULL` and `palette` is specified, defaults to the highest value of the flow palette. If `NULL` and `palette` is not specified, the color is determined by the `darkMode` setting (white for light mode, black for dark mode).
+#'
 #' @return An HTML widget of class `flowmapblue` and `htmlwidget` that can be rendered in R Markdown, Shiny, or viewed in a browser. It can also be saved to `html` file with \code{\link[htmlwidgets:saveWidget]{htmlwidgets:saveWidget()}}. See examples for more details.
 #'
 #' @examples
@@ -98,9 +105,24 @@
 #'
 #' # view the map
 #' flowmap
+#'
+#' # example 4, automatic color scaling
+#' flowmap <- flowmapblue(
+#'  ch_locations,
+#'  ch_flows,
+#'  mapboxAccessToken = Sys.getenv('MAPBOX_API_TOKEN'),
+#'  clustering = FALSE,
+#'  darkMode = TRUE,
+#'  palette = "Plasma",
+#'  reverse_palette = TRUE,
+#'  style = "jenks",
+#'  n = 5
+#' )
+#' flowmap
 #' }
 #'
 #' @import htmlwidgets
+#' @import classInt
 #' @export
 flowmapblue <- function(
   locations,
@@ -108,8 +130,111 @@ flowmapblue <- function(
   mapboxAccessToken = NULL,
   clustering = TRUE,
   animation = FALSE,
-  darkMode = FALSE
+  darkMode = FALSE,
+  palette = NULL,
+  reverse_palette = FALSE,
+  style = "quantile",
+  n = 5,
+  breaks = NULL,
+  location_color = NULL
 ) {
+  # Apply color scaling if palette is provided
+  if (!is.null(palette)) {
+    if (clustering) {
+      warning(
+        "Clustering is enabled. Individual flow colors may not be visible as they are aggregated. Consider setting clustering = FALSE."
+      )
+    }
+
+    # Calculate breaks
+    # We pass style directly to classIntervals
+    # If style is 'fixed', breaks must be provided
+    if (style == "fixed" && is.null(breaks)) {
+      stop("When style = 'fixed', the 'breaks' argument must be provided.")
+    }
+
+    # classIntervals arguments
+    ci_args <- list(var = flows$count, n = n, style = style)
+    if (!is.null(breaks)) {
+      ci_args$fixedBreaks <- breaks
+    }
+
+    breaks_obj <- do.call(classInt::classIntervals, ci_args)
+
+    # Generate palette
+    if (length(palette) == 1) {
+      # Normalize common palette names
+      if (palette == "Greys") {
+        palette <- "Grays"
+      }
+
+      if (palette %in% grDevices::hcl.pals()) {
+        colors <- grDevices::hcl.colors(
+          n,
+          palette = palette,
+          rev = reverse_palette
+        )
+      } else {
+        # Try to use it as a color for interpolation (e.g. "red" or c("red", "blue"))
+        # We wrap in tryCatch to give a better error message if it fails
+        tryCatch(
+          {
+            cols <- grDevices::colorRampPalette(palette)(n)
+            if (reverse_palette) {
+              cols <- rev(cols)
+            }
+            colors <- cols
+          },
+          error = function(e) {
+            stop(paste0(
+              "Palette '",
+              palette,
+              "' not found in hcl.pals() and is not a valid color for interpolation."
+            ))
+          }
+        )
+      }
+    } else if (length(palette) >= n) {
+      # User provided a vector of colors
+      colors <- palette[1:n]
+      if (reverse_palette) colors <- rev(colors)
+    } else {
+      # User provided a vector of colors but fewer than n, interpolate
+      cols <- grDevices::colorRampPalette(palette)(n)
+      if (reverse_palette) {
+        cols <- rev(cols)
+      }
+      colors <- cols
+    }
+
+    # Assign colors
+    # classIntervals returns $brks
+    # We use cut to map values to intervals
+    flows$color <- as.character(cut(
+      flows$count,
+      breaks = breaks_obj$brks,
+      labels = colors,
+      include.lowest = TRUE
+    ))
+
+    # Default location_color to the highest value of the palette if not specified
+    if (is.null(location_color)) {
+      location_color <- colors[length(colors)]
+    }
+  }
+
+  # Convert color names to hex codes
+  if (!is.null(location_color)) {
+    # Check if it's not already a hex code
+    if (!grepl("^#", location_color)) {
+      # Convert color name to hex
+      location_color <- grDevices::rgb(
+        t(grDevices::col2rgb(location_color)) / 255,
+        maxColorValue = 1
+      )
+    }
+  }
+
   # convert time columng to UNIX time in milliseconds
   if ("time" %in% colnames(flows)) {
     if (inherits(flows$time, "POSIXct")) {
@@ -127,7 +252,8 @@ flowmapblue <- function(
     mapboxAccessToken = mapboxAccessToken,
     clustering = clustering,
     animation = animation,
-    darkMode = darkMode
+    darkMode = darkMode,
+    locationColor = location_color
   )
 
   # create widget

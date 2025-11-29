@@ -25,7 +25,8 @@ BugReports: https://github.com/FlowmapBlue/flowmapblue.R/issues
 Depends: 
     R (>= 2.10)
 Imports: 
-    htmlwidgets
+    htmlwidgets,
+    classInt
 Suggests: 
     quarto
 VignetteBuilder:

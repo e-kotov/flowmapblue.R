@@ -115,6 +115,36 @@ flowmap <- flowmapblue(
 flowmap
 ```
 
+### Automatic Color Scaling
+
+You can also automatically color flows based on their magnitude (`count`) using various classification methods and color palettes, similar to `tmap`.
+
+Parameters:
+- `palette`: Name of a palette (e.g., "Viridis", "Plasma", "Blues", "Reds") or a vector of colors.
+- `style`: Classification method (e.g., "quantile", "jenks", "fisher", "pretty", "equal", "fixed").
+- `n`: Number of color intervals.
+- `breaks`: Vector of break points (required if `style = "fixed"`).
+
+```{r}
+# load locations and flows for Switzerland
+data(ch_locations)
+data(ch_flows)
+
+flowmap <- flowmapblue(
+ ch_locations,
+ ch_flows,
+ mapboxAccessToken = Sys.getenv('MAPBOX_API_TOKEN'),
+ clustering = FALSE, # Disable clustering to see individual flow colors
+ darkMode = TRUE,
+ palette = "Plasma",
+ style = "jenks",
+ n = 5
+)
+
+# view the map
+flowmap
+```
+
 
 Here is a [nice intro blog post](https://www.paulamoraga.com/blog/2020-07-11-mobility.html) by Paula Moraga.
 

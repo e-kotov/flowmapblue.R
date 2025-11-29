@@ -3,4 +3,5 @@
 export(flowmapblue)
 export(flowmapblueOutput)
 export(renderFlowmapblue)
+import(classInt)
 import(htmlwidgets)

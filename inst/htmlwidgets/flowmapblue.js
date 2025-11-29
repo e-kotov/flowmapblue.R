@@ -19,6 +19,7 @@ HTMLWidgets.widget({
           clustering: x.clustering,
           animation: x.animation,
           darkMode: x.darkMode,
+          locationColor: x.locationColor,
         });
       },
 

@@ -59,6 +59,7 @@ export function init({
   clustering = true,
   animation = false,
   darkMode = false,
+  locationColor = null,
 }: {
   locations: Location[];
   flows: Flow[];
@@ -67,13 +68,22 @@ export function init({
   clustering?: boolean;
   animation?: boolean;
   darkMode?: boolean;
+  locationColor?: string | null;
 }) {
-  const config = {
+  const config: any = {
     [ConfigPropName.MAPBOX_ACCESS_TOKEN]: mapboxAccessToken,
     [ConfigPropName.CLUSTER_ON_ZOOM]: clustering ? 'yes' : 'no',
     [ConfigPropName.ANIMATE_FLOWS]: animation ? 'yes' : 'no',
     [ConfigPropName.COLORS_DARK_MODE]: darkMode ? 'yes' : 'no',
   };
+
+  // Only add location color if provided
+  if (locationColor) {
+    config['colors.location'] = locationColor;
+  }
+
+  console.log('Config object:', config);
+  console.log('Location color:', locationColor);
 
   ReactDOM.render(
     <FlowMapWrapper
