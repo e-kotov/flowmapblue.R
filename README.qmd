@@ -80,6 +80,41 @@ flowmap <- flowmapblue(
 flowmap
 ```
 
+### Custom Colors
+
+You can customize the color of each flow by adding a `color` column to the `flows` data frame. Each color should be a hex color code.
+
+The following example demonstrates how to apply a green color gradient based on the flow magnitude:
+
+```{r}
+# load locations and flows for Switzerland
+data(ch_locations)
+data(ch_flows)
+
+# Create a color gradient (Light Green to Dark Green)
+color_palette <- colorRampPalette(c("#90EE90", "#006400"))
+n_colors <- 100
+colors <- color_palette(n_colors)
+
+# Map flow counts to colors
+# Using rank() to distribute colors evenly across the flows
+flow_ranks <- rank(ch_flows$count)
+color_indices <- ceiling((flow_ranks / max(flow_ranks)) * n_colors)
+ch_flows$color <- colors[color_indices]
+
+flowmap <- flowmapblue(
+ ch_locations,
+ ch_flows,
+ mapboxAccessToken = Sys.getenv('MAPBOX_API_TOKEN'),
+ clustering = FALSE, # Disable clustering to see individual flow colors
+ darkMode = TRUE,
+ animation = FALSE
+)
+
+# view the map
+flowmap
+```
+
 
 Here is a [nice intro blog post](https://www.paulamoraga.com/blog/2020-07-11-mobility.html) by Paula Moraga.
 

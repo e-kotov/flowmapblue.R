@@ -17,6 +17,7 @@
 #'   \item{dest}{A `character` vector representing the destination location identifier (must match the `id` in `locations`).}
 #'   \item{count}{An `integer` vector representing the flow count between the origin and destination locations.}
 #'   \item{time}{(Optional) A vector of `POSIXct` or `Date` objects representing the date or date and time of the flow.}
+#'   \item{color}{(Optional) A `character` vector representing the color of the flow (e.g., "#ffccaa").}
 #' }
 #'
 #' @param mapboxAccessToken A `character` string representing the Mapbox access token. This is required to render the map using Mapbox tiles. You can obtain a free token at \href{https://account.mapbox.com/}{https://account.mapbox.com/}.

@@ -12,3 +12,5 @@ dependencies:
     src: htmlwidgets/lib
     script:
       - flowmap-blue.min.js
+    stylesheet:
+      - flowmap-blue.min.css

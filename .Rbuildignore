@@ -17,3 +17,6 @@
 ^CRAN-SUBMISSION$
 ^tools$
 ^pkgdown$
+^dev$
+^FlowmapBlue$
+^private$
